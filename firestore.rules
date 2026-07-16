@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function myFamilyId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.familyId;
+    }
+
+    // A user can only read/write their own profile doc
+    match /users/{uid} {
+      allow read, update: if isSignedIn() && request.auth.uid == uid;
+      allow create: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Family root doc: any signed-in user can read it (needed to validate an
+    // invite code on the "Join Family" screen) but it only holds a name —
+    // no financial data. Subcollections below stay members-only.
+    match /families/{familyId} {
+      allow create: if isSignedIn();
+      allow read: if isSignedIn();
+
+      // Everything inside a family (transactions, accounts, categories, members)
+      // is readable/writable only by signed-in users belonging to that family.
+      match /{subcollection}/{docId} {
+        allow read, write: if isSignedIn() && myFamilyId() == familyId;
+      }
+    }
+  }
+}

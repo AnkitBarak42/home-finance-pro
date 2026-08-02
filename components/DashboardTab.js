@@ -30,17 +30,17 @@ export default function DashboardTab({ accounts, family, monthTxns, monthIncome,
     ...dueCards.map((c) => {
       const dueDate = c.dueDay ? new Date(today.getFullYear(), today.getMonth(), c.dueDay) : null;
       const overdue = dueDate ? dueDate < today : false;
-      return { key: `card-${c.id}`, kind: "Credit Card", label: c.name, amount: c.usedLimit, dueDay: c.dueDay, overdue, icon: CreditCard, color: "#F0B429", nav: "cards" };
+      return { key: `card-${c.id}`, kind: "Credit Card", label: c.name, amount: c.usedLimit, dueDay: c.dueDay, overdue, icon: CreditCard, color: "#F5A623", nav: "cards" };
     }),
     ...dueLoans.map((l) => {
       const dueDate = l.nextDueDate ? new Date(l.nextDueDate) : null;
       const overdue = dueDate ? dueDate < today : false;
-      return { key: `loan-${l.id}`, kind: "EMI", label: l.name, amount: l.emiAmount, dueDay: dueDate?.getDate(), overdue, icon: Wallet2, color: "#FF6B5B", nav: "loans" };
+      return { key: `loan-${l.id}`, kind: "EMI", label: l.name, amount: l.emiAmount, dueDay: dueDate?.getDate(), overdue, icon: Wallet2, color: "#F0506B", nav: "loans" };
     }),
     ...dueBills.map((b) => {
       const dueDate = b.dueDay ? new Date(today.getFullYear(), today.getMonth(), b.dueDay) : null;
       const overdue = dueDate ? dueDate < today : false;
-      return { key: `bill-${b.id}`, kind: "Bill", label: b.name, amount: b.amount, dueDay: b.dueDay, overdue, icon: Receipt, color: "#8C7AE6", nav: "bills" };
+      return { key: `bill-${b.id}`, kind: "Bill", label: b.name, amount: b.amount, dueDay: b.dueDay, overdue, icon: Receipt, color: "#5B4FE8", nav: "bills" };
     }),
   ].sort((a, b) => (b.overdue - a.overdue) || (a.dueDay || 99) - (b.dueDay || 99));
 
@@ -49,35 +49,35 @@ export default function DashboardTab({ accounts, family, monthTxns, monthIncome,
   const savings = monthIncome - monthExpense;
   const budgetUsed = monthIncome > 0 ? Math.min(100, Math.round((monthExpense / monthIncome) * 100)) : monthExpense > 0 ? 100 : 0;
   const recent = monthTxns.slice(0, 5);
-  const ringColor = budgetUsed >= 90 ? "#FF6B5B" : budgetUsed >= 60 ? "#F0B429" : "#38D39F";
+  const ringColor = budgetUsed >= 90 ? "#F0506B" : budgetUsed >= 60 ? "#F5A623" : "#1FAE7C";
   const r = 30, c = 2 * Math.PI * r;
 
   return (
     <div className="px-4 pb-6">
-      <button onClick={() => onNavigate("insights")} className="w-full flex items-center gap-4 bg-gradient-to-br from-panel to-panel2 border border-border rounded-[20px] p-[18px] mb-4 text-left active:opacity-80">
+      <button onClick={() => onNavigate("insights")} className="w-full flex items-center gap-4 bg-gradient-to-br from-violet to-violet2 rounded-[22px] p-[18px] mb-4 text-left active:opacity-90 shadow-[0_12px_28px_rgba(91,79,232,0.28)]">
         <svg width="76" height="76" className="flex-shrink-0">
-          <circle cx="38" cy="38" r={r} stroke="#2A2F40" strokeWidth="7" fill="none" />
-          <circle cx="38" cy="38" r={r} stroke={ringColor} strokeWidth="7" fill="none"
+          <circle cx="38" cy="38" r={r} stroke="rgba(255,255,255,0.25)" strokeWidth="7" fill="none" />
+          <circle cx="38" cy="38" r={r} stroke="#FFFFFF" strokeWidth="7" fill="none"
             strokeDasharray={c} strokeDashoffset={c - (budgetUsed / 100) * c} strokeLinecap="round"
             transform="rotate(-90 38 38)" style={{ transition: "stroke-dashoffset .6s ease" }} />
-          <text x="38" y="43" textAnchor="middle" fill="#EDEFF7" fontSize="15" fontFamily="IBM Plex Mono" fontWeight="600">{budgetUsed}%</text>
+          <text x="38" y="43" textAnchor="middle" fill="#FFFFFF" fontSize="15" fontFamily="IBM Plex Mono" fontWeight="600">{budgetUsed}%</text>
         </svg>
         <div className="flex-1 min-w-0">
-          <div className="text-xs text-muted2 font-medium">Net Worth · tap for Insights</div>
-          <div className="font-mono text-[26px] font-bold text-text mt-0.5">{netWorth < 0 ? "-" : ""}{rupee(netWorth)}</div>
+          <div className="text-xs text-white/70 font-medium">Net Worth · tap for Insights</div>
+          <div className="font-mono text-[26px] font-bold text-white mt-0.5">{netWorth < 0 ? "-" : ""}{rupee(netWorth)}</div>
           <div className="flex gap-3.5 mt-2.5">
-            <span className="flex items-center gap-1.5"><ArrowUpRight size={13} className="text-mint" /><span className="font-mono text-[12.5px] text-mint font-semibold">{rupee(monthIncome)}</span></span>
-            <span className="flex items-center gap-1.5"><ArrowDownRight size={13} className="text-coral" /><span className="font-mono text-[12.5px] text-coral font-semibold">{rupee(monthExpense)}</span></span>
+            <span className="flex items-center gap-1.5"><ArrowUpRight size={13} className="text-white" /><span className="font-mono text-[12.5px] text-white font-semibold">{rupee(monthIncome)}</span></span>
+            <span className="flex items-center gap-1.5"><ArrowDownRight size={13} className="text-white/80" /><span className="font-mono text-[12.5px] text-white/90 font-semibold">{rupee(monthExpense)}</span></span>
           </div>
         </div>
-        <ChevronRight size={16} className="text-[#4A4F63] flex-shrink-0" />
+        <ChevronRight size={16} className="text-white/70 flex-shrink-0" />
       </button>
 
       <div className="grid grid-cols-2 gap-2.5 mb-3">
-        <StatCard onClick={() => onNavigate("income")} icon={<TrendingUp size={16} className="text-mint" />} label="Monthly Income" value={rupee(monthIncome)} accent="#38D39F" />
-        <StatCard onClick={() => onNavigate("expense")} icon={<TrendingDown size={16} className="text-coral" />} label="Monthly Expense" value={rupee(monthExpense)} accent="#FF6B5B" />
-        <StatCard onClick={() => onNavigate("insights")} icon={<PiggyBank size={16} className="text-amber" />} label="Savings" value={(savings < 0 ? "-" : "") + rupee(savings)} accent="#F0B429" />
-        <StatCard onClick={() => onNavigate("family")} icon={<Users size={16} className="text-violet" />} label="Family Members" value={String(family.length)} accent="#8C7AE6" />
+        <StatCard onClick={() => onNavigate("income")} icon={<TrendingUp size={16} className="text-mint" />} label="Monthly Income" value={rupee(monthIncome)} accent="#1FAE7C" />
+        <StatCard onClick={() => onNavigate("expense")} icon={<TrendingDown size={16} className="text-coral" />} label="Monthly Expense" value={rupee(monthExpense)} accent="#F0506B" />
+        <StatCard onClick={() => onNavigate("insights")} icon={<PiggyBank size={16} className="text-amber" />} label="Savings" value={(savings < 0 ? "-" : "") + rupee(savings)} accent="#F5A623" />
+        <StatCard onClick={() => onNavigate("accounts")} icon={<Landmark size={16} className="text-violet" />} label="Accounts" value={String(accounts.length)} accent="#5B4FE8" />
       </div>
 
       <SectionLabel text="Money Overview" />
@@ -96,7 +96,7 @@ export default function DashboardTab({ accounts, family, monthTxns, monthIncome,
             {dueItems.map((it) => {
               const Icon = it.icon;
               return (
-                <button key={it.key} onClick={() => onNavigate(it.nav)} className="flex items-center gap-3 px-4 py-3 border-b border-borderSoft last:border-b-0 w-full text-left active:bg-white/5">
+                <button key={it.key} onClick={() => onNavigate(it.nav)} className="flex items-center gap-3 px-4 py-3 border-b border-borderSoft last:border-b-0 w-full text-left active:bg-black/[0.03]">
                   <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: it.color + "1A" }}>
                     <Icon size={14} style={{ color: it.color }} />
                   </div>
@@ -141,7 +141,7 @@ export default function DashboardTab({ accounts, family, monthTxns, monthIncome,
         <button onClick={() => onNavigate("income")} className="text-[11.5px] text-violet font-semibold">View all</button>
       } />
       {recent.length === 0 ? (
-        <div className="text-center text-[#5C6178] text-[13px] p-7 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">
+        <div className="text-center text-muted text-[13px] p-7 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">
           No transactions yet this month. Tap + to add your first one.
         </div>
       ) : recent.map((t) => (
@@ -153,7 +153,8 @@ export default function DashboardTab({ accounts, family, monthTxns, monthIncome,
 
 function StatCard({ icon, label, value, accent, onClick }) {
   return (
-    <button onClick={onClick} className="bg-panel border border-border rounded-2xl p-3.5 text-left active:opacity-80">
+    <button onClick={onClick} className="bg-panel rounded-2xl p-3.5 text-left active:scale-[0.97] transition-transform shadow-card"
+      style={{ boxShadow: `0 6px 20px ${accent}14` }}>
       <div className="w-[30px] h-[30px] rounded-[9px] flex items-center justify-center mb-2.5" style={{ background: accent + "1A" }}>{icon}</div>
       <div className="text-[11.5px] text-muted2 font-medium">{label}</div>
       <div className="font-mono text-[16.5px] font-semibold text-text mt-0.5">{value}</div>
@@ -163,7 +164,7 @@ function StatCard({ icon, label, value, accent, onClick }) {
 
 function MiniCard({ icon, label, value, warn, onClick }) {
   return (
-    <button onClick={onClick} className="min-w-[118px] bg-panel border border-border rounded-2xl px-3.5 py-3 flex-shrink-0 text-left active:opacity-80">
+    <button onClick={onClick} className="min-w-[118px] bg-panel rounded-2xl px-3.5 py-3 flex-shrink-0 text-left active:scale-[0.97] transition-transform shadow-card">
       <div className="flex items-center gap-1.5 mb-1.5">{icon}<span className="text-[10px] text-muted font-semibold uppercase tracking-wide">{label}</span></div>
       <div className={`font-mono text-[13.5px] font-semibold ${warn ? "text-amber" : "text-text"}`}>{value}</div>
     </button>
@@ -179,7 +180,7 @@ function ordinal(n) {
 export function SectionLabel({ text, action }) {
   return (
     <div className="flex items-center justify-between mx-0.5 mb-2.5 mt-1">
-      <div className="text-[13px] font-bold text-[#C7CBDA] tracking-wide">{text}</div>
+      <div className="text-[13px] font-bold text-text tracking-wide">{text}</div>
       {action}
     </div>
   );

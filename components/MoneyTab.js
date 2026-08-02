@@ -37,7 +37,7 @@ export default function MoneyTab({
       )}
 
       <style jsx global>{`
-        .input { width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; }
+        .input { width: 100%; background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; }
       `}</style>
     </div>
   );
@@ -83,7 +83,7 @@ function AccountsSection({ accounts, addAccount, updateAccount, deleteAccount })
             </select>
           </Field>
           <Field label="Balance"><input className="input" type="number" value={form.balance} onChange={(e) => setForm((f) => ({ ...f, balance: e.target.value }))} placeholder="0" /></Field>
-          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-violet text-ink font-bold text-[14.5px] mt-1">Save Account</button>
+          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-violet text-white font-bold text-[14.5px] mt-1">Save Account</button>
         </Modal>
       )}
     </>
@@ -145,7 +145,7 @@ function CardsSection({ cards, accounts, addCard, updateCard, deleteCard, payCar
       <SectionLabel text={`Credit Cards (${cards.length})`} action={
         <button onClick={startAdd} className="flex items-center gap-1 text-[12.5px] text-amber bg-amber/10 px-2.5 py-1.5 rounded-[9px] font-semibold"><Plus size={14} /> Add</button>
       } />
-      {cards.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">No credit cards added yet.</div>}
+      {cards.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">No credit cards added yet.</div>}
       {cards.map((c) => {
         const available = c.creditLimit - c.usedLimit;
         const pct = c.creditLimit > 0 ? Math.min(100, Math.round((c.usedLimit / c.creditLimit) * 100)) : 0;
@@ -163,18 +163,18 @@ function CardsSection({ cards, accounts, addCard, updateCard, deleteCard, payCar
               </div>
             </div>
             <div className="h-1.5 rounded-full bg-ink overflow-hidden mb-2">
-              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: pct > 80 ? "#FF6B5B" : "#F0B429" }} />
+              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: pct > 80 ? "#F0506B" : "#F5A623" }} />
             </div>
             <div className="grid grid-cols-2 gap-y-1.5 text-[12px] text-muted mb-2">
               <div>Used: <span className="font-mono text-text">{rupee(c.usedLimit)}</span></div>
               <div className="text-right">Available: <span className="font-mono text-mint">{rupee(available)}</span></div>
-              <div>Statement: <span className="text-[#C7CBDA]">{c.statementDay ? `${c.statementDay}${ordinal(c.statementDay)}` : "—"}</span></div>
+              <div>Statement: <span className="text-[#6B7086]">{c.statementDay ? `${c.statementDay}${ordinal(c.statementDay)}` : "—"}</span></div>
               <div className="text-right">
-                Due: <span className={due?.overdue ? "text-coral font-semibold" : "text-[#C7CBDA]"}>
+                Due: <span className={due?.overdue ? "text-coral font-semibold" : "text-[#6B7086]"}>
                   {due ? due.text : "—"}{c.dueDayAuto && due ? " (auto)" : ""}{due?.overdue ? " (overdue)" : due && due.daysLeft >= 0 && due.daysLeft <= 5 && c.usedLimit > 0 ? ` (${due.daysLeft}d left)` : ""}
                 </span>
               </div>
-              <div>Min Due: <span className="font-mono text-[#C7CBDA]">{rupee(c.minDue)}</span></div>
+              <div>Min Due: <span className="font-mono text-[#6B7086]">{rupee(c.minDue)}</span></div>
               <div className="text-right">Cashback: <span className="font-mono text-mint">{rupee(c.cashback)}</span></div>
             </div>
             <button onClick={() => { setPaying(c.id); setPayAmt(String(c.minDue || "")); }} className="w-full py-2 rounded-xl bg-amber/15 text-amber font-semibold text-[12.5px]">Pay / Reduce Balance</button>
@@ -199,7 +199,7 @@ function CardsSection({ cards, accounts, addCard, updateCard, deleteCard, payCar
             <Field label="Minimum Due"><input className="input" type="number" value={form.minDue} onChange={(e) => setForm((f) => ({ ...f, minDue: e.target.value }))} /></Field>
             <Field label="Cashback Earned"><input className="input" type="number" value={form.cashback} onChange={(e) => setForm((f) => ({ ...f, cashback: e.target.value }))} /></Field>
           </div>
-          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-amber text-ink font-bold text-[14.5px] mt-1">Save Card</button>
+          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-amber text-white font-bold text-[14.5px] mt-1">Save Card</button>
         </Modal>
       )}
 
@@ -211,7 +211,7 @@ function CardsSection({ cards, accounts, addCard, updateCard, deleteCard, payCar
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           </Field>
-          <button onClick={submitPay} className="w-full py-[13px] rounded-2xl bg-mint text-ink font-bold text-[14.5px] mt-1">Confirm Payment</button>
+          <button onClick={submitPay} className="w-full py-[13px] rounded-2xl bg-mint text-white font-bold text-[14.5px] mt-1">Confirm Payment</button>
         </Modal>
       )}
     </>
@@ -256,7 +256,7 @@ function LoansSection({ loans, accounts, addLoan, updateLoan, deleteLoan, payLoa
       <SectionLabel text={`Loans / EMI (${loans.length})`} action={
         <button onClick={startAdd} className="flex items-center gap-1 text-[12.5px] text-coral bg-coral/10 px-2.5 py-1.5 rounded-[9px] font-semibold"><Plus size={14} /> Add</button>
       } />
-      {loans.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">No loans added yet.</div>}
+      {loans.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">No loans added yet.</div>}
       {loans.map((l) => {
         const pct = l.principal > 0 ? Math.min(100, Math.round(((l.principal - l.remainingBalance) / l.principal) * 100)) : 0;
         return (
@@ -277,8 +277,8 @@ function LoansSection({ loans, accounts, addLoan, updateLoan, deleteLoan, payLoa
             <div className="grid grid-cols-2 gap-y-1.5 text-[12px] text-muted mb-2">
               <div>EMI: <span className="font-mono text-text">{rupee(l.emiAmount)}</span></div>
               <div className="text-right">Remaining: <span className="font-mono text-coral">{rupee(l.remainingBalance)}</span></div>
-              <div>Interest: <span className="text-[#C7CBDA]">{l.interestRate}%</span></div>
-              <div className="text-right">Next Due: <span className="text-[#C7CBDA]">{l.nextDueDate || "—"}</span></div>
+              <div>Interest: <span className="text-[#6B7086]">{l.interestRate}%</span></div>
+              <div className="text-right">Next Due: <span className="text-[#6B7086]">{l.nextDueDate || "—"}</span></div>
             </div>
             <button onClick={() => setPaying(l.id)} className="w-full py-2 rounded-xl bg-coral/15 text-coral font-semibold text-[12.5px]">Mark EMI Paid</button>
           </div>
@@ -302,7 +302,7 @@ function LoansSection({ loans, accounts, addLoan, updateLoan, deleteLoan, payLoa
             <Field label="Remaining Balance"><input className="input" type="number" value={form.remainingBalance} onChange={(e) => setForm((f) => ({ ...f, remainingBalance: e.target.value }))} /></Field>
           </div>
           <Field label="Next Due Date"><input className="input" type="date" value={form.nextDueDate} onChange={(e) => setForm((f) => ({ ...f, nextDueDate: e.target.value }))} /></Field>
-          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-coral text-ink font-bold text-[14.5px] mt-1">Save Loan</button>
+          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-coral text-white font-bold text-[14.5px] mt-1">Save Loan</button>
         </Modal>
       )}
 
@@ -314,7 +314,7 @@ function LoansSection({ loans, accounts, addLoan, updateLoan, deleteLoan, payLoa
             </select>
           </Field>
           <div className="text-[12px] text-muted mb-3">This deducts the EMI amount from the selected account, reduces the remaining balance, and advances the next due date by one month.</div>
-          <button onClick={async () => { await payLoanEmi(paying, payAcct); setPaying(null); }} className="w-full py-[13px] rounded-2xl bg-mint text-ink font-bold text-[14.5px]">Confirm EMI Payment</button>
+          <button onClick={async () => { await payLoanEmi(paying, payAcct); setPaying(null); }} className="w-full py-[13px] rounded-2xl bg-mint text-white font-bold text-[14.5px]">Confirm EMI Payment</button>
         </Modal>
       )}
     </>

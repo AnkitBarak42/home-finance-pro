@@ -51,7 +51,7 @@ export function LockScreen({ onUnlock }) {
       <div className={`text-xs mb-6 ${error ? "text-coral" : "text-muted"}`}>{error ? "Incorrect PIN, try again" : "Unlock Home Finance Pro"}</div>
       <div className="flex gap-3 mb-8">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className={`w-3.5 h-3.5 rounded-full ${i < pin.length ? "bg-violet" : "bg-[#262B3B]"}`} />
+          <div key={i} className={`w-3.5 h-3.5 rounded-full ${i < pin.length ? "bg-violet" : "bg-[#ECEEF6]"}`} />
         ))}
       </div>
       <div className="grid grid-cols-3 gap-4">
@@ -98,7 +98,7 @@ export function PinSetupModal({ onSet, onSkip }) {
       <div className={`text-xs mb-6 ${error ? "text-coral" : "text-muted"}`}>{error || "Protects this app on this device"}</div>
       <div className="flex gap-3 mb-8">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className={`w-3.5 h-3.5 rounded-full ${i < val.length ? "bg-violet" : "bg-[#262B3B]"}`} />
+          <div key={i} className={`w-3.5 h-3.5 rounded-full ${i < val.length ? "bg-violet" : "bg-[#ECEEF6]"}`} />
         ))}
       </div>
       <div className="grid grid-cols-3 gap-4 mb-6">

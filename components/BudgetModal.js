@@ -40,7 +40,7 @@ export default function BudgetModal({ categories, monthTxns, updateCategory, onC
             </div>
             {budget > 0 && (
               <div className="h-1.5 rounded-full bg-ink overflow-hidden mb-2">
-                <div className="h-full rounded-full" style={{ width: `${pct}%`, background: over ? "#FF6B5B" : pct > 80 ? "#F0B429" : "#38D39F" }} />
+                <div className="h-full rounded-full" style={{ width: `${pct}%`, background: over ? "#F0506B" : pct > 80 ? "#F5A623" : "#1FAE7C" }} />
               </div>
             )}
             <div className="flex gap-2">
@@ -52,7 +52,7 @@ export default function BudgetModal({ categories, monthTxns, updateCategory, onC
         );
       })}
       <style jsx global>{`
-        .input { background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 9px 12px; color: #EDEFF7; font-size: 13px; outline: none; box-sizing: border-box; }
+        .input { background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 9px 12px; color: #1D2033; font-size: 13px; outline: none; box-sizing: border-box; }
       `}</style>
     </Modal>
   );

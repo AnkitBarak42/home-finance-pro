@@ -21,7 +21,7 @@ export const addDaysToDay = (day, addDays) => {
 export const PAYMENT_MODES = ["Cash", "UPI", "Card", "Netbanking", "Wallet"];
 
 export const CATEGORY_COLORS = [
-  "#FF6B5B", "#38D39F", "#F0B429", "#8C7AE6", "#4FA8E0",
+  "#F0506B", "#1FAE7C", "#F5A623", "#5B4FE8", "#4FA8E0",
   "#F26E9A", "#6FCF97", "#E0A458", "#5BC0DE", "#C77DFF",
   "#FF9F6B", "#6BE0D0",
 ];

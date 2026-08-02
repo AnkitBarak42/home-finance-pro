@@ -30,7 +30,7 @@ export default function ReportsModal({ transactions, onClose }) {
 
   return (
     <Modal title="Reports" onClose={onClose}>
-      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#262B3B]">
+      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#ECEEF6]">
         {[["daily", "Daily"], ["weekly", "Weekly"], ["monthly", "Monthly"], ["yearly", "Yearly"]].map(([k, l]) => (
           <button key={k} onClick={() => setRange(k)} className={`flex-1 py-2 rounded-[9px] text-[12px] font-semibold ${range === k ? "bg-violet/20 text-violet" : "text-muted"}`}>{l}</button>
         ))}
@@ -41,7 +41,7 @@ export default function ReportsModal({ transactions, onClose }) {
         <div className="max-h-[420px] overflow-y-auto">
           {rows.map((r, i) => (
             <div key={i} className="flex items-center justify-between py-2.5 border-b border-borderSoft">
-              <span className="text-[13px] text-[#C7CBDA]">{r.label}</span>
+              <span className="text-[13px] text-[#6B7086]">{r.label}</span>
               <div className="flex gap-3 font-mono text-[12.5px]">
                 <span className="text-mint">+{rupee(r.income)}</span>
                 <span className="text-coral">-{rupee(r.expense)}</span>

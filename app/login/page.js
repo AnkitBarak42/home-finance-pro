@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Wallet, Users, LogIn } from "lucide-react";
+import { Wallet, User, KeyRound, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
-  const { login, signUpCreateFamily, signUpJoinFamily } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
-  const [mode, setMode] = useState("login"); // login | create | join
-  const [form, setForm] = useState({ name: "", email: "", password: "", familyName: "", familyId: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -19,91 +18,70 @@ export default function LoginPage() {
     e.preventDefault();
     setError(""); setBusy(true);
     try {
-      if (mode === "login") {
-        await login(form.email, form.password);
-      } else if (mode === "create") {
-        await signUpCreateFamily(form);
-      } else {
-        await signUpJoinFamily(form);
-      }
+      await login(form.username, form.password);
       router.replace("/dashboard");
     } catch (err) {
-      setError(err.message.replace("Firebase: ", ""));
+      setError(err.message);
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center px-6 py-10">
-      <div className="mb-8 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-coral/15 flex items-center justify-center mx-auto mb-4">
-          <Wallet size={26} className="text-coral" />
+    <div className="flex-1 flex flex-col justify-center px-6 py-10 relative overflow-hidden bg-[#0B0D14] min-h-screen">
+      {/* Ambient color glow, purely decorative */}
+      <div className="pointer-events-none absolute -top-24 -left-16 w-64 h-64 rounded-full bg-amber/20 blur-[80px]" />
+      <div className="pointer-events-none absolute top-40 -right-20 w-72 h-72 rounded-full bg-violet/20 blur-[90px]" />
+      <div className="pointer-events-none absolute bottom-0 left-10 w-56 h-56 rounded-full bg-mint/10 blur-[80px]" />
+
+      <div className="relative mb-8 text-center">
+        <div className="w-16 h-16 rounded-[22px] bg-gradient-to-br from-coral via-amber to-violet flex items-center justify-center mx-auto mb-4 shadow-[0_10px_30px_rgba(245,166,35,0.35)]">
+          <Wallet size={28} className="text-white" strokeWidth={2.4} />
         </div>
-        <h1 className="text-2xl font-bold text-text">Home Finance Pro</h1>
-        <p className="text-muted text-sm mt-1">Realtime family ledger, synced everywhere</p>
+        <h1 className="text-[26px] font-extrabold text-white tracking-tight">
+          Home<span className="bg-gradient-to-r from-coral via-amber to-violet bg-clip-text text-transparent">Finance</span> Pro
+        </h1>
+        <p className="text-[#8890A6] text-[13px] mt-1.5">Your personal ledger, synced everywhere</p>
       </div>
 
-      <div className="flex bg-ink border border-border rounded-xl p-1 mb-6">
-        {[["login", "Log In"], ["create", "New Family"], ["join", "Join Family"]].map(([k, l]) => (
-          <button key={k} onClick={() => setMode(k)}
-            className={`flex-1 py-2 rounded-lg text-xs font-semibold transition ${mode === k ? "bg-coral/20 text-coral" : "text-muted"}`}>
-            {l}
+      <div className="relative bg-[#151822] border border-[#23273A] rounded-[24px] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
+        <p className="text-center text-[13px] text-[#8890A6] mb-5">Log in to continue</p>
+
+        <form onSubmit={submit} className="space-y-3">
+          <Field label="Username" icon={<User size={14} />}>
+            <input required className="input" value={form.username} onChange={set("username")} placeholder="e.g. priya_sharma"
+              autoCapitalize="none" autoCorrect="off" />
+          </Field>
+          <Field label="Password" icon={<KeyRound size={14} />}>
+            <input required type="password" className="input" value={form.password} onChange={set("password")} placeholder="Enter your password" />
+          </Field>
+
+          {error && <div className="text-coral text-[12.5px] bg-coral/10 border border-coral/30 rounded-xl px-3.5 py-2.5">{error}</div>}
+
+          <button disabled={busy}
+            className="w-full font-bold py-3.5 rounded-2xl mt-2 flex items-center justify-center gap-2 disabled:opacity-50 text-white transition-transform active:scale-[0.98] bg-gradient-to-br from-violet to-violet2 shadow-fab">
+            <LogIn size={17} />
+            {busy ? "Please wait…" : "Log In"}
           </button>
-        ))}
+        </form>
       </div>
-
-      <form onSubmit={submit} className="space-y-3">
-        {mode !== "login" && (
-          <Field label="Your name">
-            <input required className="input" value={form.name} onChange={set("name")} placeholder="e.g. Priya" />
-          </Field>
-        )}
-        <Field label="Email">
-          <input required type="email" className="input" value={form.email} onChange={set("email")} placeholder="you@example.com" />
-        </Field>
-        <Field label="Password">
-          <input required type="password" minLength={6} className="input" value={form.password} onChange={set("password")} placeholder="At least 6 characters" />
-        </Field>
-        {mode === "create" && (
-          <Field label="Family name">
-            <input className="input" value={form.familyName} onChange={set("familyName")} placeholder="e.g. Sharma Family" />
-          </Field>
-        )}
-        {mode === "join" && (
-          <Field label="Family code">
-            <input required className="input" value={form.familyId} onChange={set("familyId")} placeholder="Ask an admin for the code" />
-          </Field>
-        )}
-
-        {error && <div className="text-coral text-xs bg-coral/10 border border-coral/30 rounded-lg px-3 py-2">{error}</div>}
-
-        <button disabled={busy} className="w-full bg-coral text-ink font-bold py-3 rounded-xl mt-2 flex items-center justify-center gap-2 disabled:opacity-50">
-          {mode === "login" ? <LogIn size={16} /> : <Users size={16} />}
-          {busy ? "Please wait…" : mode === "login" ? "Log In" : mode === "create" ? "Create Family & Start" : "Join Family"}
-        </button>
-      </form>
-
-      {mode === "create" && (
-        <p className="text-muted text-xs text-center mt-4 leading-relaxed">
-          You'll get a unique family code after signup — share it with up to 4 family members so their entries sync in realtime.
-        </p>
-      )}
 
       <style jsx global>{`
         .input {
-          width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px;
-          padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none;
+          width: 100%; background: #0F1117; border: 1px solid #23273A; border-radius: 14px;
+          padding: 12px 14px; color: #EDEFF7; font-size: 14.5px; outline: none;
+          transition: border-color .15s ease, box-shadow .15s ease;
         }
+        .input:focus { border-color: #5B4FE8; box-shadow: 0 0 0 3px rgba(91,79,232,0.2); }
       `}</style>
     </div>
   );
 }
 
-function Field({ label, children }) {
+function Field({ label, icon, children }) {
   return (
     <div>
-      <div className="text-xs text-muted2 font-semibold mb-1.5">{label}</div>
+      <div className="text-[11.5px] text-[#8890A6] font-semibold mb-1.5 flex items-center gap-1.5">{icon}{label}</div>
       {children}
     </div>
   );

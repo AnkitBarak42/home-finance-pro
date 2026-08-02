@@ -34,7 +34,7 @@ export default function ExportModal({ transactions, catMap, accMap, onClose }) {
   return (
     <Modal title="Export Data" onClose={onClose}>
       <div className="text-[12.5px] text-muted mb-4">Download every transaction in your family ledger ({transactions.length} entries) as a CSV file — opens directly in Excel or Google Sheets.</div>
-      <button onClick={download} className="w-full flex items-center justify-center gap-2 py-[13px] rounded-2xl bg-mint text-ink font-bold text-[14.5px]">
+      <button onClick={download} className="w-full flex items-center justify-center gap-2 py-[13px] rounded-2xl bg-mint text-white font-bold text-[14.5px]">
         <FileSpreadsheet size={16} /> Download CSV
       </button>
       <div className="text-[11px] text-[#4A4F63] mt-4 leading-relaxed">

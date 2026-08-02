@@ -11,7 +11,7 @@ export default function Modal({ title, onClose, children }) {
         <div className="flex items-center justify-between px-5 pt-[18px] pb-2.5 sticky top-0 bg-panel z-10">
           <div className="text-[16.5px] font-bold text-text">{title}</div>
           <button onClick={onClose} className="w-9 h-9 rounded-[11px] bg-ink border border-border flex items-center justify-center">
-            <X size={18} className="text-[#C7CBDA]" />
+            <X size={18} className="text-[#6B7086]" />
           </button>
         </div>
         <div className="px-5 pb-6 pt-1">{children}</div>

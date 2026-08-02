@@ -26,13 +26,13 @@ export default function TransactionsTab({ cursor, setCursor, monthTxns, catMap, 
       </div>
 
       {grouped.length === 0 ? (
-        <div className="text-center text-[#5C6178] text-[13px] p-7 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">No transactions this month.</div>
+        <div className="text-center text-[#5C6178] text-[13px] p-7 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">No transactions this month.</div>
       ) : grouped.map(([dateStr, txns]) => {
         const d = new Date(dateStr);
         const dayTotal = txns.reduce((s, t) => s + (t.type === "expense" ? t.amount : 0), 0);
         return (
           <div key={dateStr} className="mb-3.5">
-            <div className="flex justify-between text-[13px] font-bold text-[#C7CBDA] px-1 py-1.5">
+            <div className="flex justify-between text-[13px] font-bold text-[#6B7086] px-1 py-1.5">
               <span>{d.getDate()} <span className="text-muted font-medium">{fmtDay(d)}</span></span>
               <span className="font-mono text-coral text-[13px]">{rupee(dayTotal)}</span>
             </div>
@@ -48,11 +48,11 @@ export function MonthNav({ cursor, nav }) {
   return (
     <div className="flex items-center justify-between mb-3.5">
       <button onClick={() => nav(-1)} className="w-8 h-8 rounded-[10px] bg-panel border border-border flex items-center justify-center">
-        <ChevronLeft size={18} className="text-[#C7CBDA]" />
+        <ChevronLeft size={18} className="text-[#6B7086]" />
       </button>
       <div className="text-[15px] font-bold text-text">{cursor.toLocaleDateString("en-IN", { month: "long", year: "numeric" })}</div>
       <button onClick={() => nav(1)} className="w-8 h-8 rounded-[10px] bg-panel border border-border flex items-center justify-center">
-        <ChevronRight size={18} className="text-[#C7CBDA]" />
+        <ChevronRight size={18} className="text-[#6B7086]" />
       </button>
     </div>
   );

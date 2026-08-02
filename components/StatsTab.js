@@ -5,7 +5,7 @@ import { AlertTriangle } from "lucide-react";
 import { rupee, monthKey, CATEGORY_COLORS } from "@/utils/format";
 import { MonthNav } from "./TransactionsTab";
 
-const tooltipStyle = { background: "#1E2230", border: "1px solid #2A2F40", borderRadius: 10, fontFamily: "Sora", fontSize: 12 };
+const tooltipStyle = { background: "#F8F9FD", border: "1px solid #E3E5F0", borderRadius: 10, fontFamily: "Sora", fontSize: 12 };
 const GROUPS = [
   { key: "category", label: "Category" },
   { key: "member", label: "Member" },
@@ -76,7 +76,7 @@ export default function StatsTab({ cursor, setCursor, monthTxns, catMap, accMap,
 
       <div className="bg-panel border border-border rounded-[18px] p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-[13.5px] font-bold text-[#C7CBDA]">Spending Breakdown</div>
+          <div className="text-[13.5px] font-bold text-[#6B7086]">Spending Breakdown</div>
         </div>
         <div className="flex gap-1.5 overflow-x-auto pb-2 mb-2">
           {GROUPS.map((g) => (
@@ -105,7 +105,7 @@ export default function StatsTab({ cursor, setCursor, monthTxns, catMap, accMap,
                 <div key={i} className="flex justify-between items-center py-1.5 px-0.5">
                   <div className="flex items-center gap-2">
                     <span className="w-[9px] h-[9px] rounded-[3px] inline-block" style={{ background: e.color }} />
-                    <span className="text-[13px] text-[#C7CBDA]">{e.label}</span>
+                    <span className="text-[13px] text-[#6B7086]">{e.label}</span>
                   </div>
                   <span className="font-mono text-[12.5px] text-text">
                     {rupee(e.value)} <span className="text-muted">({Math.round((e.value / monthExpense) * 100) || 0}%)</span>
@@ -118,15 +118,15 @@ export default function StatsTab({ cursor, setCursor, monthTxns, catMap, accMap,
       </div>
 
       <div className="bg-panel border border-border rounded-[18px] p-4 mb-4">
-        <div className="text-[13.5px] font-bold text-[#C7CBDA] mb-2">6-Month Expense Trend</div>
+        <div className="text-[13.5px] font-bold text-[#6B7086] mb-2">6-Month Expense Trend</div>
         <div className="w-full h-[180px]">
           <ResponsiveContainer>
             <BarChart data={trend} margin={{ left: -20, top: 8 }}>
-              <CartesianGrid stroke="#22273570" vertical={false} />
+              <CartesianGrid stroke="#E3E5F040" vertical={false} />
               <XAxis dataKey="month" stroke="#6B7186" fontSize={11} tickLine={false} axisLine={false} />
               <YAxis stroke="#6B7186" fontSize={10} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v) => rupee(v)} cursor={{ fill: "#ffffff08" }} />
-              <Bar dataKey="exp" radius={[5, 5, 0, 0]} fill="#FF6B5B" />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v) => rupee(v)} cursor={{ fill: "#00000006" }} />
+              <Bar dataKey="exp" radius={[5, 5, 0, 0]} fill="#F0506B" />
             </BarChart>
           </ResponsiveContainer>
         </div>

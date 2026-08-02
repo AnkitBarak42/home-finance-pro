@@ -6,10 +6,10 @@ import Modal, { Field } from "./Modal";
 import { SectionLabel } from "./DashboardTab";
 
 const LOG_TYPES = [
-  { key: "fuel", label: "Fuel", icon: Fuel, color: "#FF6B5B" },
-  { key: "service", label: "Service", icon: Wrench, color: "#8C7AE6" },
-  { key: "insurance", label: "Insurance", icon: ShieldCheck, color: "#38D39F" },
-  { key: "pollution", label: "Pollution", icon: Gauge, color: "#F0B429" },
+  { key: "fuel", label: "Fuel", icon: Fuel, color: "#F0506B" },
+  { key: "service", label: "Service", icon: Wrench, color: "#5B4FE8" },
+  { key: "insurance", label: "Insurance", icon: ShieldCheck, color: "#1FAE7C" },
+  { key: "pollution", label: "Pollution", icon: Gauge, color: "#F5A623" },
   { key: "challan", label: "Challan", icon: ScrollText, color: "#F26E9A" },
   { key: "tyres", label: "Tyres", icon: CircleDot, color: "#4FA8E0" },
 ];
@@ -38,7 +38,7 @@ export default function VehiclesTab({ vehicles, addVehicle, deleteVehicle, logs,
         <button onClick={() => setAddingVehicle(true)} className="flex items-center gap-1 text-[12.5px] text-violet bg-violet/10 px-2.5 py-1.5 rounded-[9px] font-semibold"><Plus size={14} /> Add</button>
       } />
 
-      {vehicles.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">No vehicles added yet.</div>}
+      {vehicles.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">No vehicles added yet.</div>}
 
       {vehicles.map((v) => {
         const vLogs = (logsByVehicle[v.id] || []).sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -60,7 +60,7 @@ export default function VehiclesTab({ vehicles, addVehicle, deleteVehicle, logs,
                   <button key={lt.key} onClick={() => setLogModal({ vehicleId: v.id, type: lt.key })}
                     className="flex flex-col items-center gap-1 py-2.5 rounded-xl border border-border" style={{ background: lt.color + "12" }}>
                     <Icon size={15} style={{ color: lt.color }} />
-                    <span className="text-[10.5px] text-[#C7CBDA]">{lt.label}</span>
+                    <span className="text-[10.5px] text-[#6B7086]">{lt.label}</span>
                   </button>
                 );
               })}
@@ -77,7 +77,7 @@ export default function VehiclesTab({ vehicles, addVehicle, deleteVehicle, logs,
                   const lt = LOG_TYPES.find((x) => x.key === l.type);
                   return (
                     <div key={l.id} className="flex items-center gap-2.5 py-2 border-b border-borderSoft">
-                      <span className="text-[11.5px] text-[#C7CBDA] flex-1">{lt?.label} {l.note ? "· " + l.note : ""}</span>
+                      <span className="text-[11.5px] text-[#6B7086] flex-1">{lt?.label} {l.note ? "· " + l.note : ""}</span>
                       <span className="text-[11px] text-muted">{new Date(l.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}</span>
                       <span className="font-mono text-[12.5px] text-coral font-semibold">{rupee(l.amount)}</span>
                       <button onClick={() => deleteLog(l)} className="w-[22px] h-[22px] flex items-center justify-center"><Trash2 size={12} className="text-muted" /></button>
@@ -98,7 +98,7 @@ export default function VehiclesTab({ vehicles, addVehicle, deleteVehicle, logs,
               {["Car", "Bike/Scooter", "EV Scooter", "Other"].map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </Field>
-          <button onClick={saveVehicle} className="w-full py-[13px] rounded-2xl bg-violet text-ink font-bold text-[14.5px] mt-1">Save Vehicle</button>
+          <button onClick={saveVehicle} className="w-full py-[13px] rounded-2xl bg-violet text-white font-bold text-[14.5px] mt-1">Save Vehicle</button>
         </Modal>
       )}
 
@@ -108,7 +108,7 @@ export default function VehiclesTab({ vehicles, addVehicle, deleteVehicle, logs,
       )}
 
       <style jsx global>{`
-        .input { width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; }
+        .input { width: 100%; background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; }
       `}</style>
     </div>
   );
@@ -137,7 +137,7 @@ function LogEntryModal({ logModal, accounts, onClose, onSave }) {
       </Field>
       <Field label="Date"><input className="input" type="date" value={date} onChange={(e) => setDate(e.target.value)} /></Field>
       <Field label="Note (optional)"><input className="input" value={note} onChange={(e) => setNote(e.target.value)} /></Field>
-      <button onClick={submit} className="w-full py-[13px] rounded-2xl bg-coral text-ink font-bold text-[14.5px] mt-1">Save</button>
+      <button onClick={submit} className="w-full py-[13px] rounded-2xl bg-coral text-white font-bold text-[14.5px] mt-1">Save</button>
     </Modal>
   );
 }

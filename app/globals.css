@@ -4,18 +4,19 @@
 @tailwind utilities;
 
 html, body {
-  background: #0F1117;
-  color: #EDEFF7;
+  background: #F4F5FC;
+  color: #1D2033;
   font-family: "Sora", sans-serif;
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-thumb { background: #2A2F40; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #E3E5F0; border-radius: 4px; }
 
 input, select {
   font-family: "Sora", sans-serif;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.7);
+  filter: invert(0.4);
+  opacity: 0.6;
 }

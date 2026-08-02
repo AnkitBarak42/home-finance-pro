@@ -19,11 +19,14 @@ export default function ManageCategoriesModal({ categories, addCategory, deleteC
     return m;
   }, [typeCats]);
 
+  const [justAdded, setJustAdded] = useState(null);
+
   const add = async () => {
     if (!name.trim()) return;
     const color = CATEGORY_COLORS[categories.length % CATEGORY_COLORS.length];
-    await addCategory({ name: name.trim(), icon, color, type, budget: 0, parentId: parentId || null });
+    const newId = await addCategory({ name: name.trim(), icon, color, type, budget: 0, parentId: parentId || null });
     setName(""); setIcon("🏷️"); setParentId(""); setAddingSubTo(null);
+    if (newId) { setJustAdded(newId); setTimeout(() => setJustAdded(null), 1600); }
   };
 
   const quickAddSub = (parent) => {
@@ -34,7 +37,7 @@ export default function ManageCategoriesModal({ categories, addCategory, deleteC
 
   return (
     <Modal title="Manage Categories" onClose={onClose}>
-      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#262B3B]">
+      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#ECEEF6]">
         <button onClick={() => { setType("expense"); setParentId(""); }} className={`flex-1 py-2.5 rounded-[9px] font-semibold text-[13px] ${type === "expense" ? "bg-coral/20 text-coral" : "text-muted"}`}>Expense</button>
         <button onClick={() => { setType("income"); setParentId(""); }} className={`flex-1 py-2.5 rounded-[9px] font-semibold text-[13px] ${type === "income" ? "bg-mint/20 text-mint" : "text-muted"}`}>Income</button>
       </div>
@@ -65,17 +68,17 @@ export default function ManageCategoriesModal({ categories, addCategory, deleteC
         {topLevel.length === 0 && <div className="text-center text-[#5C6178] text-[13px] py-6">No categories yet.</div>}
         {topLevel.map((c) => (
           <div key={c.id}>
-            <div className="flex items-center gap-3 py-[11px] px-1 border-b border-borderSoft">
+            <div className="flex items-center gap-3 py-[11px] px-1 border-b border-borderSoft transition-colors" style={{ background: justAdded === c.id ? "#1FAE7C14" : "transparent" }}>
               <div className="w-9 h-9 rounded-[11px] flex items-center justify-center flex-shrink-0" style={{ background: c.color + "1A" }}><span>{c.icon}</span></div>
               <div className="flex-1"><div className="text-sm text-text font-semibold">{c.name}</div></div>
               <button onClick={() => quickAddSub(c)} className="text-[11px] text-violet font-semibold bg-violet/10 px-2 py-1 rounded-lg mr-1">+ Sub</button>
               <button onClick={() => deleteCategory(c.id)} className="w-[26px] h-[26px] flex items-center justify-center"><Trash2 size={13} className="text-muted" /></button>
             </div>
             {(childrenByParent[c.id] || []).map((sub) => (
-              <div key={sub.id} className="flex items-center gap-2.5 py-2 pl-6 pr-1 border-b border-borderSoft">
+              <div key={sub.id} className="flex items-center gap-2.5 py-2 pl-6 pr-1 border-b border-borderSoft transition-colors" style={{ background: justAdded === sub.id ? "#1FAE7C14" : "transparent" }}>
                 <CornerDownRight size={13} className="text-muted flex-shrink-0" />
                 <div className="w-7 h-7 rounded-[9px] flex items-center justify-center flex-shrink-0" style={{ background: sub.color + "1A" }}><span className="text-[13px]">{sub.icon}</span></div>
-                <div className="flex-1"><div className="text-[13px] text-[#C7CBDA] font-medium">{sub.name}</div></div>
+                <div className="flex-1"><div className="text-[13px] text-[#6B7086] font-medium">{sub.name}</div></div>
                 <button onClick={() => deleteCategory(sub.id)} className="w-[24px] h-[24px] flex items-center justify-center"><Trash2 size={12} className="text-muted" /></button>
               </div>
             ))}
@@ -83,7 +86,7 @@ export default function ManageCategoriesModal({ categories, addCategory, deleteC
         ))}
       </div>
       <style jsx global>{`
-        .input { background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; width: 100%; }
+        .input { background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; width: 100%; }
       `}</style>
     </Modal>
   );

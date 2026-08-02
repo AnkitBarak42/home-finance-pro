@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Check, CreditCard } from "lucide-react";
 import Modal, { Field } from "./Modal";
-import VoiceEntryButton from "./VoiceEntryButton";
 import { PAYMENT_MODES } from "@/utils/format";
 
 export default function AddTransactionModal({ type, setType, categories, accounts, creditCards = [], onClose, onSave, addCategory }) {
@@ -19,6 +18,7 @@ export default function AddTransactionModal({ type, setType, categories, account
   const [newCatName, setNewCatName] = useState("");
   const [newCatIcon, setNewCatIcon] = useState("🏷️");
   const [addingCat, setAddingCat] = useState(false);
+  const [justAddedId, setJustAddedId] = useState(null);
 
   const filteredCats = categories.filter((c) => c.type === type);
   const topLevel = filteredCats.filter((c) => !c.parentId);
@@ -45,6 +45,13 @@ export default function AddTransactionModal({ type, setType, categories, account
     if (paymentMode !== "Card") setCreditCardId("");
   }, [paymentMode]);
 
+  // Briefly highlight a freshly-created category once it appears in the grid.
+  useEffect(() => {
+    if (!justAddedId) return;
+    const t = setTimeout(() => setJustAddedId(null), 1600);
+    return () => clearTimeout(t);
+  }, [justAddedId]);
+
   const pickParent = (c) => {
     setCategoryId(c.id);
     setExpandedParentId(childrenByParent[c.id]?.length ? c.id : null);
@@ -52,10 +59,19 @@ export default function AddTransactionModal({ type, setType, categories, account
   const pickChild = (c) => setCategoryId(c.id);
 
   const submitQuickAddCategory = async () => {
-    if (!newCatName.trim() || !addCategory) return;
+    if (!newCatName.trim() || !addCategory || addingCat) return;
     setAddingCat(true);
-    await addCategory({ name: newCatName.trim(), icon: newCatIcon, color: "#8C7AE6", type, budget: 0, parentId: null });
-    setNewCatName(""); setNewCatIcon("🏷️"); setQuickAdd(false); setAddingCat(false);
+    try {
+      const newId = await addCategory({ name: newCatName.trim(), icon: newCatIcon, color: "#5B4FE8", type, budget: 0, parentId: null });
+      if (newId) {
+        setCategoryId(newId);
+        setExpandedParentId(null);
+        setJustAddedId(newId);
+      }
+      setNewCatName(""); setNewCatIcon("🏷️"); setQuickAdd(false);
+    } finally {
+      setAddingCat(false);
+    }
   };
 
   const linkedToCard = type === "expense" && paymentMode === "Card" && creditCardId;
@@ -72,15 +88,9 @@ export default function AddTransactionModal({ type, setType, categories, account
     setSaving(false);
   };
 
-  const handleVoice = ({ amount: a, categoryId: c, note: n }) => {
-    if (a) setAmount(a);
-    if (c) { setCategoryId(c); const parent = filteredCats.find((x) => x.id === c); if (parent && !parent.parentId) setExpandedParentId(childrenByParent[c]?.length ? c : null); }
-    setNote(n);
-  };
-
   return (
     <Modal title="Add Transaction" onClose={onClose}>
-      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#262B3B]">
+      <div className="flex bg-ink rounded-xl p-1 mb-4 border border-[#ECEEF6]">
         <button onClick={() => setType("expense")}
           className={`flex-1 py-2.5 rounded-[9px] font-semibold text-[13px] ${type === "expense" ? "bg-coral/20 text-coral" : "text-muted bg-transparent"}`}>
           Expense
@@ -92,23 +102,24 @@ export default function AddTransactionModal({ type, setType, categories, account
       </div>
 
       <Field label="Amount">
-        <div className="flex items-center gap-2">
-          <input className="input font-mono text-[22px] font-semibold flex-1" type="number" inputMode="decimal" placeholder="₹ 0"
-            value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus />
-          <VoiceEntryButton categories={filteredCats} onParsed={handleVoice} />
-        </div>
-        <div className="text-[10.5px] text-muted mt-1.5">Tap the mic and say e.g. "Milk 65 rupees" to auto-fill.</div>
+        <input className="input font-mono text-[22px] font-semibold" type="number" inputMode="decimal" placeholder="₹ 0"
+          value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus />
       </Field>
 
       <Field label="Category">
         <div className="grid grid-cols-3 gap-2">
           {topLevel.map((c) => (
             <button key={c.id} onClick={() => pickParent(c)}
-              className="flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl border-[1.5px] relative"
-              style={{ borderColor: (categoryId === c.id || expandedParentId === c.id) ? c.color : "#2A2F40", background: (categoryId === c.id || expandedParentId === c.id) ? c.color + "22" : "#1B1E29" }}>
+              className="flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl border-[1.5px] relative transition-all"
+              style={{
+                borderColor: (categoryId === c.id || expandedParentId === c.id) ? c.color : "#E3E5F0",
+                background: (categoryId === c.id || expandedParentId === c.id) ? c.color + "22" : "#F8F9FD",
+                boxShadow: justAddedId === c.id ? `0 0 0 3px ${c.color}55` : "none",
+              }}>
               <span className="text-[15px]">{c.icon}</span>
               <span className={`text-xs text-center ${(categoryId === c.id || expandedParentId === c.id) ? "text-text" : "text-[#9AA0B4]"}`}>{c.name}</span>
               {childrenByParent[c.id]?.length > 0 && <span className="absolute top-1 right-1.5 text-[8px] text-muted">▾</span>}
+              {justAddedId === c.id && <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-mint flex items-center justify-center"><Check size={10} className="text-white" /></span>}
             </button>
           ))}
           {addCategory && (
@@ -133,18 +144,18 @@ export default function AddTransactionModal({ type, setType, categories, account
         )}
 
         {expandedParentId && childrenByParent[expandedParentId]?.length > 0 && (
-          <div className="mt-2.5 pl-1 border-l-2 border-[#262B3B]">
+          <div className="mt-2.5 pl-1 border-l-2 border-[#ECEEF6]">
             <div className="text-[10.5px] text-muted font-semibold mb-1.5 pl-2">Subcategory (optional)</div>
             <div className="flex flex-wrap gap-1.5 pl-2">
               <button onClick={() => setCategoryId(expandedParentId)}
                 className="px-2.5 py-1.5 rounded-full text-[11.5px] font-semibold"
-                style={{ background: categoryId === expandedParentId ? "#8C7AE622" : "#1B1E29", color: categoryId === expandedParentId ? "#8C7AE6" : "#9AA0B4", border: "1px solid #2A2F40" }}>
+                style={{ background: categoryId === expandedParentId ? "#5B4FE822" : "#F8F9FD", color: categoryId === expandedParentId ? "#5B4FE8" : "#9AA0B4", border: "1px solid #E3E5F0" }}>
                 General
               </button>
               {childrenByParent[expandedParentId].map((sub) => (
                 <button key={sub.id} onClick={() => pickChild(sub)}
                   className="px-2.5 py-1.5 rounded-full text-[11.5px] font-semibold flex items-center gap-1"
-                  style={{ background: categoryId === sub.id ? sub.color + "22" : "#1B1E29", color: categoryId === sub.id ? "#EDEFF7" : "#9AA0B4", border: `1px solid ${categoryId === sub.id ? sub.color : "#2A2F40"}` }}>
+                  style={{ background: categoryId === sub.id ? sub.color + "22" : "#F8F9FD", color: categoryId === sub.id ? "#1D2033" : "#9AA0B4", border: `1px solid ${categoryId === sub.id ? sub.color : "#E3E5F0"}` }}>
                   <span>{sub.icon}</span>{sub.name}
                 </button>
               ))}
@@ -192,13 +203,14 @@ export default function AddTransactionModal({ type, setType, categories, account
       </Field>
 
       <button onClick={submit} disabled={!canSave}
-        className="w-full py-[13px] rounded-2xl text-ink font-bold text-[14.5px] mt-1 disabled:opacity-50"
-        style={{ background: type === "income" ? "#38D39F" : "#FF6B5B" }}>
+        className="w-full py-[13px] rounded-2xl text-white font-bold text-[14.5px] mt-1 disabled:opacity-50 transition-transform active:scale-[0.98]"
+        style={{ background: type === "income" ? "#1FAE7C" : "#F0506B" }}>
         {saving ? "Saving…" : `Save ${type === "income" ? "Income" : "Expense"}`}
       </button>
 
       <style jsx global>{`
-        .input { width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; }
+        .input { width: 100%; background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; transition: border-color .15s ease; }
+        .input:focus { border-color: #5B4FE8; }
       `}</style>
     </Modal>
   );

@@ -33,7 +33,7 @@ export default function SearchModal({ transactions, catMap, accMap, cardMap, onC
         {results.map((t) => <TxnRow key={t.id} t={t} cat={catMap[t.categoryId]} catMap={catMap} acc={accMap[t.accountId]} cardMap={cardMap} />)}
       </div>
       <style jsx global>{`
-        .input { width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; }
+        .input { width: 100%; background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; }
       `}</style>
     </Modal>
   );

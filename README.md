@@ -6,13 +6,13 @@ and categories sync **instantly** across everyone's phone/PC using Firestore's
 realtime listeners (`onSnapshot`) — no refresh needed.
 
 ## Features
-- Email/password login, one workspace per family
-- "Create Family" → get a shareable invite code · "Join Family" → enter the code
+- **Username + password login** (no email anywhere) — one workspace per family
+- "New Family" → get a shareable invite code · "Join Family" → enter the code
 - Add income/expense, pick category + account + payment mode, optional note
-- **Voice entry** — tap the mic in Add Transaction and speak an amount/category (browser speech recognition)
 - Realtime dashboard: Net Worth, Cash in Hand, Bank Balance, CC Outstanding, EMI Due, Bills Due, monthly income/expense/savings ring — **every card is tappable** and jumps to the right screen (e.g. tapping "CC Outstanding" opens Money → Credit Cards)
 - A **"Due This Cycle"** list on the dashboard merges credit card bills, upcoming EMIs, and unpaid recurring bills into one sorted, tappable list — overdue items are flagged in red
 - **Credit cards auto-track their bill**: pick payment mode "Card" and link the specific card when adding an expense, and that card's balance goes up automatically instead of manually editing "Used Limit" — pay it off anytime from Money → Credit Cards
+- **Credit card due date auto-calculates**: fill in the Statement Day once and leave Due Day blank — it's set to Statement + 20 days automatically
 - Transactions grouped by day with month navigation
 - **Insights** — pie chart grouped by Category / Member / Account / Payment Mode, plus 6-month expense trend and an automatic "category up vs last month" alert
 - **Money tab** — Accounts, Credit Cards (limit/used/available, statement day, **auto due date = statement + 20 days if left blank**, min due, cashback, one-tap payment), Loans/EMI (principal, remaining balance, interest, next due date, one-tap "Mark EMI Paid")
@@ -36,6 +36,9 @@ rather than faked:
 - **Push/background reminders** — works only while the app is open in a tab;
   true background notifications need Firebase Cloud Messaging + a service
   worker, which is a good next step if you want it.
+- **Voice entry** — was included in an earlier version (browser speech
+  recognition) but removed by request to keep the Add Transaction flow
+  simpler and more reliable.
 
 ---
 
@@ -78,7 +81,7 @@ npm run dev
 ```
 
 Open **http://localhost:3000** → you'll land on the login screen →
-choose **New Family**, fill in your name/email/password → you're in.
+choose **New Family**, fill in your name/username/password → you're in.
 Open the app on a second phone/browser, choose **Join Family**, and paste
 the invite code shown under **More → Family Members**. Add a transaction on
 one device and watch it appear instantly on the other.
@@ -100,9 +103,9 @@ Add the same `NEXT_PUBLIC_FIREBASE_*` variables in the Vercel project's
 ## How the data is structured (Firestore)
 
 ```
-users/{uid}                        → { name, email, familyId, role }
+users/{uid}                        → { name, username, familyId, role }
 families/{familyId}                → { name, createdAt, createdBy }
-families/{familyId}/members/{uid}  → { name, email, role, joinedAt }
+families/{familyId}/members/{uid}  → { name, username, role, joinedAt }
 families/{familyId}/accounts/{id}  → { name, type, balance }
 families/{familyId}/categories/{id}→ { name, icon, color, type, budget }
 families/{familyId}/creditCards/{id} → { name, bank, creditLimit, usedLimit, statementDate, dueDate, minDue, cashback }
@@ -129,6 +132,14 @@ with two people editing at once.
 accounts, categories, members) to signed-in users who belong to that
 `familyId`. The family root doc is readable by any signed-in user only so the
 "Join Family" screen can validate an invite code before creating an account.
+
+### How username login works
+Firebase Authentication's email/password provider is used under the hood,
+but the person never sees or types an email. Each username is turned into a
+deterministic fake address (e.g. `monu` → `monu@homefinancepro.local`) purely
+so Firebase Auth has something in the right format — nothing is ever sent to
+that address. Usernames are unique automatically because Firebase rejects a
+second account with the same underlying address.
 
 ## Notes & next steps you may want to add later
 - Google/Apple sign-in (Firebase Auth supports both with a few lines)

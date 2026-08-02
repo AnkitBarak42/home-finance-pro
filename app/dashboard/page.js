@@ -20,7 +20,6 @@ import VehiclesTab from "@/components/VehiclesTab";
 import BillsTab from "@/components/BillsTab";
 import AddTransactionModal from "@/components/AddTransactionModal";
 import ManageCategoriesModal from "@/components/ManageCategoriesModal";
-import ManageFamilyModal from "@/components/ManageFamilyModal";
 import SearchModal from "@/components/SearchModal";
 import BudgetModal from "@/components/BudgetModal";
 import ReportsModal from "@/components/ReportsModal";
@@ -81,7 +80,6 @@ export default function DashboardPage() {
       case "cards": setTab("money"); setMoneySub("cards"); break;
       case "loans": setTab("money"); setMoneySub("loans"); break;
       case "bills": setManage("bills"); break;
-      case "family": setManage("family"); break;
       default: break;
     }
   }, []);
@@ -104,7 +102,7 @@ export default function DashboardPage() {
         const cardSnap = await tx.get(cardRef);
         cardCurrent = cardSnap.exists() ? cardSnap.data().usedLimit || 0 : 0;
       }
-      tx.set(txnRef, { ...txn, createdBy: profile?.email || "", createdByName: profile?.name || "", createdAt: serverTimestamp() });
+      tx.set(txnRef, { ...txn, createdBy: profile?.username || "", createdByName: profile?.name || "", createdAt: serverTimestamp() });
       if (cardRef) {
         tx.update(cardRef, { usedLimit: cardCurrent + (txn.type === "income" ? -txn.amount : txn.amount) });
       } else if (acctRef) {
@@ -154,7 +152,11 @@ export default function DashboardPage() {
   const deleteAccount = async (id) => { await deleteDoc(doc(db, "families", familyId, "accounts", id)); notify("Account removed"); };
 
   /* ---------- categories ---------- */
-  const addCategory = async (c) => { await addDoc(collection(db, "families", familyId, "categories"), c); };
+  const addCategory = async (c) => {
+    const ref = await addDoc(collection(db, "families", familyId, "categories"), c);
+    notify("Category added");
+    return ref.id;
+  };
   const deleteCategory = async (id) => { await deleteDoc(doc(db, "families", familyId, "categories", id)); };
   const updateCategory = async (id, patch) => { await updateDoc(doc(db, "families", familyId, "categories", id), patch); notify("Budget updated"); };
 
@@ -241,7 +243,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Header tab={tab} onSearch={() => setShowSearch(true)} />
+      <Header tab={tab} onSearch={() => setShowSearch(true)} profile={profile} />
       <div className="flex-1 overflow-y-auto pb-[90px]">
         {tab === "dashboard" && (
           <DashboardTab
@@ -274,7 +276,7 @@ export default function DashboardPage() {
           />
         )}
         {tab === "more" && (
-          <MoreTab onManage={setManage} family={family} profile={profile} onLogout={logout} hasPin={pinLock.hasPin} />
+          <MoreTab onManage={setManage} profile={profile} onLogout={logout} hasPin={pinLock.hasPin} />
         )}
       </div>
 
@@ -294,9 +296,6 @@ export default function DashboardPage() {
       )}
       {manage === "budget" && (
         <BudgetModal categories={categories} monthTxns={monthTxns} updateCategory={updateCategory} onClose={() => setManage(null)} />
-      )}
-      {manage === "family" && (
-        <ManageFamilyModal family={family} familyId={familyId} onClose={() => setManage(null)} />
       )}
       {manage === "vehicles" && (
         <Modal title="Vehicles" onClose={() => setManage(null)}>
@@ -321,7 +320,7 @@ export default function DashboardPage() {
         <SearchModal transactions={transactions} catMap={catMap} accMap={accMap} cardMap={cardMap} onClose={() => setShowSearch(false)} />
       )}
       {toast && (
-        <div className="fixed bottom-[100px] left-1/2 -translate-x-1/2 bg-[#23283A] text-text px-[18px] py-2.5 rounded-xl text-[13px] font-semibold shadow-lg z-[100]">
+        <div className="fixed bottom-[100px] left-1/2 -translate-x-1/2 bg-[#ECEEF6] text-text px-[18px] py-2.5 rounded-xl text-[13px] font-semibold shadow-lg z-[100]">
           {toast}
         </div>
       )}

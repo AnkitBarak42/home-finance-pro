@@ -31,7 +31,7 @@ export default function BillsTab({ bills, addBill, updateBill, deleteBill, markP
       <SectionLabel text={`Recurring Bills (${bills.length})`} action={
         <button onClick={startAdd} className="flex items-center gap-1 text-[12.5px] text-amber bg-amber/10 px-2.5 py-1.5 rounded-[9px] font-semibold"><Plus size={14} /> Add</button>
       } />
-      {bills.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#151822] rounded-2xl border border-dashed border-[#262B3B]">No recurring bills tracked yet.</div>}
+      {bills.length === 0 && <div className="text-center text-[#5C6178] text-[13px] p-6 bg-[#F8F9FD] rounded-2xl border border-dashed border-[#ECEEF6]">No recurring bills tracked yet.</div>}
       {bills.map((b) => {
         const paidThisMonth = b.lastPaidMonth === thisMonth;
         return (
@@ -65,7 +65,7 @@ export default function BillsTab({ bills, addBill, updateBill, deleteBill, markP
             <Field label="Amount"><input className="input" type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} /></Field>
             <Field label="Due Day (1-31)"><input className="input" type="number" min="1" max="31" value={form.dueDay} onChange={(e) => setForm((f) => ({ ...f, dueDay: e.target.value }))} /></Field>
           </div>
-          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-amber text-ink font-bold text-[14.5px] mt-1">Save Bill</button>
+          <button onClick={save} className="w-full py-[13px] rounded-2xl bg-amber text-white font-bold text-[14.5px] mt-1">Save Bill</button>
         </Modal>
       )}
 
@@ -76,12 +76,12 @@ export default function BillsTab({ bills, addBill, updateBill, deleteBill, markP
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           </Field>
-          <button onClick={async () => { await markPaid(paying, payAcct); setPaying(null); }} className="w-full py-[13px] rounded-2xl bg-mint text-ink font-bold text-[14.5px] mt-1">Confirm Payment</button>
+          <button onClick={async () => { await markPaid(paying, payAcct); setPaying(null); }} className="w-full py-[13px] rounded-2xl bg-mint text-white font-bold text-[14.5px] mt-1">Confirm Payment</button>
         </Modal>
       )}
 
       <style jsx global>{`
-        .input { width: 100%; background: #0F1117; border: 1px solid #262B3B; border-radius: 12px; padding: 11px 13px; color: #EDEFF7; font-size: 14px; outline: none; box-sizing: border-box; }
+        .input { width: 100%; background: #F4F5FC; border: 1px solid #ECEEF6; border-radius: 12px; padding: 11px 13px; color: #1D2033; font-size: 14px; outline: none; box-sizing: border-box; }
       `}</style>
     </div>
   );
